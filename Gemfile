@@ -1,0 +1,5 @@
+gem 'mime-types'
+gem 'sinatra'
+gem 'sinatra-flash'
+gem 'jruby-openssl'
+gem 'haml'

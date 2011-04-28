@@ -1,0 +1,43 @@
+-# vim: sw=2
+!!! 5
+%html
+  %head
+    :css
+      .smb .printer {
+        display: list-item;
+        list-style-image:url("#{ url("/static/gnome-dev-printer.svg") }");
+      }
+      .smb .file {
+        display: list-item;
+        list-style-image:url("#{ url("/static/unknown.svg") }");
+      }
+      .smb .dir {
+        display: list-item;
+        list-style-image:url("#{ url("/static/folder.svg") }");
+      }
+      .smb .pipe {
+        display: list-item;
+        list-style-image:url("#{ url("/static/pipe.svg") }");
+      }
+      .smb .share {
+        display: list-item;
+        list-style-image:url("#{ url("/static/share.svg") }");
+      }
+
+
+      .flash {
+        margin: 3px;
+        display: block;
+      }
+      .flash.message {
+        padding: 3px;
+        display: block;
+        color: blue;
+      }
+      .flash.error {
+        padding: 3px;
+        display: block;
+        background-color: red;
+        color: yellow;
+      }
+  %body= yield

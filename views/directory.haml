@@ -1,0 +1,11 @@
+-# vim: sw=2
+- require 'uri'
+%ul{ :class => 'smb' }
+  %li{ :class => 'dir' }
+    %a{ :href => url('/get?file=' + URI.escape(@smbfile.getParent, /[^A-Za-z0-9]/)) } ..
+  - @dir.each do |file|
+    - style = "smbfile"
+    - style = "smbdir" if file.isDirectory
+    %li{ :class => CIFS::File.get_icon(file) }
+      - href = url('/get?file=' + URI.escape(file.getURL.toString, /[^A-Za-z0-9]/) )
+      %a{ :href => href }&= file.getName

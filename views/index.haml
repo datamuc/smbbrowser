@@ -1,0 +1,38 @@
+-# vim: sw=2
+=styled_flash
+%form{ :action => url('/get'), :method => 'get' }
+  %table
+    %tr
+      %td File
+      %td
+        %input{ :size => 80, :name => 'file', :value=>@session[:file]}
+        %input{ :type => 'submit' }
+
+%hr
+
+%form{ :method => 'post', :action=>'credentials/set' }
+  %table
+    %tr
+      %td User
+      %td
+        %input{ :type=>'text',
+            :name=>'user',
+            :size=>20,
+            :value=>@session[:user] }
+      %tr
+        %td Pass
+        %td
+          %input{ :type=>'password',
+              :name=>'pass',
+              :size=>20,
+              :value=>@session[:pass] }
+      %tr
+        %td Domain
+        %td
+          %input{ :type=>'text',
+              :name=>'domain',
+              :size=>20,
+              :value=>@session[:domain] }
+      %tr
+        %td{:colspan=>2}
+          %input{:type=>'submit'}
