@@ -53,6 +53,11 @@ get '/get/*' do
         flash[:message] = "please supply valid credentials"
         return redirect to('/')
     rescue Exception => e
+        if e.message.end_with?("must end with '/'") and ! file.end_with?('/')
+            file += '/'
+            session[:file] = file
+            retry
+        end
         flash[:error] = e.message
         return redirect to('/')
     end
