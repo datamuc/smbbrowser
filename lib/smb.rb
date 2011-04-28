@@ -2,6 +2,7 @@ require 'time'
 require 'sinatra'
 require 'sinatra/flash'
 require './lib/jcifs'
+require 'uri'
 
 enable :sessions
 set :session_secret, 'XXhTTXqmjydf39duXE7rLJTXxNaYFK'
@@ -15,6 +16,11 @@ end
 
 get '/get' do
     file = params[:file]
+    redirect to('/get/' + URI.escape(file, /[^A-Za-z0-9\/]/))
+end
+
+get '/get/*' do
+    file = params[:splat][0]
     session[:file] = file
 
     begin

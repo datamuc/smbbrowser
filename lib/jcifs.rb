@@ -49,7 +49,7 @@ module CIFS
             name = @smbfile.getName
             mime = MIME::Types.type_for(name)[0]
 
-            if ['text/plain', 'text/html'].find_index(mime)
+            if ['text/plain'].find_index(mime)
                 return mime.to_s + "; charset=utf-8"
             end
 
