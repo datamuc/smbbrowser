@@ -44,6 +44,10 @@ get '/get/*' do
                 'Content-Disposition' => 'filename="%s"' % @smbfile.getName
             return fr
         end
+    rescue CIFS::SmbAuthException => e
+        flash[:error] = e.message
+        flash[:message] = "please supply valid credentials"
+        return redirect to('/')
     rescue java.lang.Exception => e
         flash[:error] = e.message
         return redirect to('/')
