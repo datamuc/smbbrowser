@@ -30,6 +30,10 @@ get '/get/*' do
             @smbfile = CIFS::File.get(file)
         end
 
+        if ! @smbfile.exists
+            raise "File does not exist"
+        end
+
         if @smbfile.isDirectory
             @dir = CIFS::DirReader.new(@smbfile)
             return haml :directory
@@ -48,7 +52,7 @@ get '/get/*' do
         flash[:error] = e.message
         flash[:message] = "please supply valid credentials"
         return redirect to('/')
-    rescue java.lang.Exception => e
+    rescue Exception => e
         flash[:error] = e.message
         return redirect to('/')
     end
