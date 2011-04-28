@@ -3,27 +3,42 @@
 %html
   %head
     :css
-      .smb .printer {
-        display: list-item;
-        list-style-image:url("#{ url("/static/gnome-dev-printer.svg") }");
+      div.printer {
+        background-repeat: no-repeat;
+        background-position: left top;
+        padding: 5px 18px 0px 0px;
+        background-image: url(#{ url("/static/gnome-dev-printer.svg") });
       }
-      .smb .file {
-        display: list-item;
-        list-style-image:url("#{ url("/static/unknown.svg") }");
+      div.file {
+        background-repeat: no-repeat;
+        background-position: left top;
+        padding: 5px 18px 0px 0px;
+        margin:0px;
+        background-image: url(#{ url("/static/unknown.svg") });
       }
-      .smb .dir {
-        display: list-item;
-        list-style-image:url("#{ url("/static/folder.svg") }");
+      div.dir {
+        background-repeat: no-repeat;
+        background-position: left top;
+        padding: 5px 18px 0px 0px;
+        margin:0px;
+        background-image:url(#{ url("/static/folder.svg") });
       }
-      .smb .pipe {
-        display: list-item;
-        list-style-image:url("#{ url("/static/pipe.svg") }");
+      div.pipe {
+        background-repeat: no-repeat;
+        background-position: left top;
+        padding: 5px 18px 0px 0px;
+        margin:0px;
+        background-image:url(#{ url("/static/pipe.svg") });
       }
-      .smb .share {
-        display: list-item;
-        list-style-image:url("#{ url("/static/share.svg") }");
+      div.share {
+        background-repeat: no-repeat;
+        background-position: left top;
+        padding: 5px 18px 0px 0px;
+        margin:0px;
+        background-image:url(#{ url("/static/share.svg") });
       }
 
+      td { padding-left: 3px; padding-right: 3px; }
 
       .flash {
         margin: 3px;

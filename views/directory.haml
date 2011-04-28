@@ -6,12 +6,26 @@
     %a{:href => url('/')} Home
   %li&= @smbfile.getURL
 
-%ul{ :class => 'smb' }
-  %li{ :class => 'dir' }
-    %a{ :href => url('/get/' + URI.escape(@smbfile.getParent, /[^A-Za-z0-9\/]/)) } ..
-  - @dir.each do |file|
-    - style = "smbfile"
-    - style = "smbdir" if file.isDirectory
-    %li{ :class => CIFS::File.get_icon(file) }
-      - href = url('/get/' + URI.escape(file.getURL.toString, /[^A-Za-z0-9\/]/) )
-      %a{ :href => href }&= file.getName
+%table
+  %thead
+    %tr
+      %th &nbsp;
+      %th Filename
+      %th{:align => 'right'} Size
+      %th LastModified
+  %tbody
+    %tr
+      %td{ :class => 'dir'} &nbsp;
+      %td{:style=>'min-width:50%;'}
+        %a{ :href => url('/get/' + URI.escape(@smbfile.getParent, /[^A-Za-z0-9\/]/)) } ..
+      %td &nbsp;
+      %td &nbsp;
+    - @dir.each do |file|
+      %tr
+        %td
+          %div{ :class => CIFS::File.get_icon(file) } &nbsp;
+        %td
+          - href = url('/get/' + URI.escape(file.getURL.toString, /[^A-Za-z0-9\/]/) )
+          %a{ :href => href }&= file.getName
+        %td{:align => 'right'}&= file.length
+        %td&= Time.at(file.getDate/1000).iso8601
