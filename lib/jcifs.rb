@@ -4,6 +4,11 @@ module CIFS
     include_package 'jcifs.smb'
     include_package 'jcifs.util'
 
+    def CIFS::escape_uri(uri)
+        uri = URI.escape(uri, /[^A-Za-z0-9\/]/)
+        uri.gsub(/%2B/, '%252B')
+    end
+
     module File
         def File::get(file, domain=nil, user=nil, pass=nil)
             if pass and !pass.empty?

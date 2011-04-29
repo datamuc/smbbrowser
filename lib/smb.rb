@@ -16,7 +16,7 @@ end
 
 get '/get' do
     file = params[:file]
-    redirect to('/get/' + URI.escape(file, /[^A-Za-z0-9\/]/))
+    redirect to('/get/' + CIFS.escape_uri(file))
 end
 
 get '/get/*' do
@@ -45,7 +45,7 @@ get '/get/*' do
                 'Last-Modified' => Time.at(@smbfile.getLastModified / 1000).httpdate,
                 'Content-Length' => @smbfile.length.to_s,
                 'Content-Type' => fr.mime_type.to_s,
-                'Content-Disposition' => 'filename="%s"' % @smbfile.getName
+                'Content-Disposition' => 'filename*="%s"' % URI.escape(@smbfile.getName, /[^A-Za-z0-9\/]/)
             return fr
         end
     rescue CIFS::SmbAuthException => e
