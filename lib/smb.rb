@@ -3,14 +3,27 @@ require 'sinatra'
 require 'sinatra/flash'
 require './lib/jcifs'
 require 'uri'
+require 'configr'
+require 'java'
 
 enable :sessions
-set :session_secret, 'XXhTTXqmjydf39duXE7rLJTXxNaYFK'
-set :views, File.dirname(__FILE__) + '/../views'
-set :public, File.dirname(__FILE__) + '/../public'
+
+configure do
+    set :session_secret, 'XXhTTXqmjydf39duXE7rLJTXxNaYFK'
+    set :views, File.dirname(__FILE__) + '/../views'
+    set :public, File.dirname(__FILE__) + '/../public'
+
+    configfile = Java::JavaLang::System.getProperty("smbbrowser.configfile")
+    if configfile and File.readable?(configfile)
+        set :config, Configr::Configuration.configure(configfile)
+    else
+        set :config, Configr::Configuration.configure {}
+    end
+end
 
 get '/' do
     @session = session
+    @config = settings.config
     haml :index
 end
 

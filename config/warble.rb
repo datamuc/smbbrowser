@@ -10,7 +10,13 @@ Warbler::Config.new do |config|
 
   # Application directories to be included in the webapp.
   config.dirs = %w(config lib public views)
-  config.gems = %w(sinatra mime-types jruby-openssl sinatra-flash haml)
+  config.gems = []
+  config.gems += %w(sinatra)
+  config.gems += %w(mime-types)
+  config.gems += %w(jruby-openssl)
+  config.gems += %w(sinatra-flash)
+  config.gems += %w(haml)
+  config.gems += %w(configr)
 
   # Additional files/directories to include, above those in config.dirs
   # config.includes = FileList["db"]

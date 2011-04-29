@@ -38,3 +38,10 @@
       %tr
         %td{:colspan=>2}
           %input{:type=>'submit'}
+
+- if @config.points_of_interest?
+  %h2 Points of Interest
+  %ul
+    - @config.points_of_interest.each do |name, url|
+      %li
+        %a{:href => url('/get/' + CIFS.escape_uri(url))}&= name
