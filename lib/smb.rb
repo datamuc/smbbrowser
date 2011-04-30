@@ -1,11 +1,12 @@
+require './lib/jcifs'
 require 'time'
 require 'sinatra'
 require 'sinatra/flash'
-require './lib/jcifs'
 require 'uri'
 require 'configr'
 require 'java'
 
+#use Rack::Chunked
 enable :sessions
 
 configure do
@@ -52,7 +53,7 @@ get '/get/*' do
             return haml :directory
         end
 
-        if @smbfile.isFile
+        if @smbfile.isFile and not request.env['HTTP_RANGE']
             fr = CIFS::FileReader.new(@smbfile)
             headers \
                 'Last-Modified' => Time.at(@smbfile.getLastModified / 1000).httpdate,
@@ -61,11 +62,21 @@ get '/get/*' do
                 'Content-Disposition' => 'filename*="%s"' % URI.escape(@smbfile.getName, /[^A-Za-z0-9\/]/)
             return fr
         end
+        if @smbfile.isFile and request.env['HTTP_RANGE']
+            fr = CIFS::RangeFileReader.new(@smbfile, request.env['HTTP_RANGE'])
+            return fr.response
+        end
+
+        raise "W00t!??//11"
     rescue CIFS::SmbAuthException => e
         flash[:error] = e.message
         flash[:message] = "please supply valid credentials"
         return redirect to('/')
+    rescue CIFS::RangeNotSatisfiableException => e
+        return [ 416, { 'Content-Type' => 'text/plain' }, e.message ]
     rescue Exception => e
+        puts(e.message)
+        puts(e.backtrace)
         if e.message.end_with?("must end with '/'") and ! file.end_with?('/')
             file += '/'
             session[:file] = file
