@@ -1,3 +1,10 @@
+# The sinatra webapp
+#
+# Author::    Danijel Tasov (mailto:dt@korn.shell.la)
+# Copyright:: Copyright (c) 2011 Danijel Tasov
+# License::   Beerware
+#
+
 require './lib/jcifs'
 require 'time'
 require 'sinatra'

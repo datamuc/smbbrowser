@@ -1,0 +1,56 @@
+= Installation
+
+== Standalone
+
+    $ jruby -S gem install mime-types sinatra-flash jruby-openssl haml configr
+
+Now you can run it with rackup and webrick:
+
+    $ CLASSPATH=$PWD/lib/jcifs-1.3.15.jar jruby -S rackup
+    [2011-05-01 13:16:07] INFO  WEBrick 1.3.1
+    [2011-05-01 13:16:07] INFO  ruby 1.8.7 (2011-04-12) [java]
+    [2011-05-01 13:16:12] INFO  WEBrick::HTTPServer#start: pid=13254 port=9292
+
+== Deploying on a Servlet Container
+
+First you need to build a .war file, warbler is a great tool that packages a
+rack app into a war file:
+
+    $ jruby -S gem install warbler bundler bouncy-castle-java
+
+For some reason warbler needs bundler and bouncy-castle-java but fails
+to depend on it, so you need to specify them explicitly.
+
+Now build the .war file:
+
+    $ jruby -S warble
+    rm -f smbbrowser.war
+    Creating smbbrowser.war
+
+Deploy smbbrowser.war on your servlet container of choice
+(I've tested on glassfish, tomcat and jetty)
+
+= Configuration
+
+All configuration is done via a yaml file, except the location of the
+yaml file. ;)
+
+== Config File Location
+
+The location of the config file is specified as a java system property:
+
+    $ CLASSPATH=$PWD/lib/jcifs-1.3.15.jar jruby \
+        -J-Dsmbbrowser.configfile=/etc/smbbrowser.yaml -S rackup
+
+If you deployed the war file to a servlet container, refer to it's documentation
+on how to set the system property there.
+
+== Config File
+
+    points_of_interest:
+        Documents: smb://docserver/public/docs/
+        X-Change:  smb://server/fileXchange/
+        #...
+
+There isn't more configuration at the moment. +point_of_interest+ creates a
+list of links on the entry page, for common used shares.
