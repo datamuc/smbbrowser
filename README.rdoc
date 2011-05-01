@@ -1,3 +1,11 @@
+= About 
+
+Smbbrowser is a web based CIFS/SMB-Filebrowser. It is driven by
+Sinatra[http://sinatrarb.com] and JCIFS[http://jcifs.org]. Because CIFS
+access is done with a java library jruby is required.
+
+The source can be found at https://github.com/datamuc/smbbrowser
+
 = Installation
 
 == Standalone
