@@ -1,3 +1,9 @@
+#
+# Author::    Danijel Tasov (mailto:dt@korn.shell.la)
+# Copyright:: Copyright (c) 2011 Danijel Tasov
+# License::   Beerware
+#
+
 module CIFS
     require 'java'
     require 'uri'
@@ -7,12 +13,26 @@ module CIFS
     include_package 'jcifs.smb'
     include_package 'jcifs.util'
 
+    # FIXME
+    #
+    # Seems jetty and webrick behave differently here :(
     def CIFS::escape_uri(uri)
         uri = URI.escape(uri, /[^A-Za-z0-9\/]/)
         uri.gsub(/%2B/, '%252B')
     end
 
     module File
+        # Creates a jcifs.smb.SmbFile object
+        #
+        # file:: required, has to be an smb url
+        #        See http://jcifs.samba.org/src/docs/api/jcifs/smb/SmbFile.html
+        #
+        # +domain+:: optional
+        # +user+:: optional
+        # +pass+:: optional
+        #
+        # If +pass+ is not specified the CIFS server is accessed anonymously
+        # and +user+ and +domain+ is ignored
         def File::get(file, domain=nil, user=nil, pass=nil)
             if pass and !pass.empty?
                 auth = CIFS::NtlmPasswordAuthentication.new(domain, user, pass)
@@ -23,6 +43,13 @@ module CIFS
             return smbfile
         end
 
+        # returns a simple string indicating the type of a file
+        # +file+:: is a SmbFile object
+        #
+        # returns:: one of dir, file, printer, share, workgroup, pipe,
+        #           comm, server, unknown
+        #
+        # It is used to select the right icon in the directory browser
         def File::get_icon(file)
             case file.getType
                 when CIFS::SmbFile::TYPE_FILESYSTEM
@@ -46,6 +73,7 @@ module CIFS
 
     end
 
+    # This class reads SmbFiles
     class FileReader
         def initialize(smbfile)
             @smbfile = smbfile
@@ -57,6 +85,7 @@ module CIFS
             @input = CIFS::SmbFileInputStream.new(@smbfile)
         end
 
+        # returns the mime type of the SmbFile based on it's file name
         def mime_type
             name = @smbfile.getName
             mime = MIME::Types.type_for(name)[0]
@@ -69,23 +98,35 @@ module CIFS
             return 'application/octet-stream'
         end
 
-        def each
+        # This yields chunks of the body, rack calls this to generate the
+        # request body
+        def each # :yields: bodychunk
             while ( read = @input.read(@bytes) ) > 0
                 yield String.from_java_bytes(@bytes[Range.new(0, read-1)])
             end
         end
+
+        protected :create_input
     end
 
+    # We throw this exception when we cannot satisfy the range
     class RangeNotSatisfiableException < Exception; end
 
+    # The RangeFileReader is a child of the FileReader and supports
+    # receiving of partial contents of a SmbFile
     class RangeFileReader < FileReader
+        # +smbfile+:: an SmbFile
+        # +range+:: the value of an HTTP range header, e. g. 'bytes=-5000'
+        #
+        # Currently only one byte-range-spec is supported, i. e. 'bytes=5-10'
+        # but *NOT* 'bytes=5-10,-5,70-'. See RFC 2616 14.35.1 for details
         def initialize(smbfile, range)
             super(smbfile)
             self.create_input
 
             @boundary = nil
             @length = @smbfile.getContentLength
-            @range = self.parse_range(range)
+            @range = parse_range(range)
             @multipart = @range.length > 1
 
             if @multipart
@@ -113,6 +154,9 @@ module CIFS
             @input = CIFS::SmbRandomAccessFile.new(@smbfile, 'r')
         end
 
+        # a boundary for multipart/byterange responses
+        # currently unused, since multipart/byteranges are currently
+        # no supported, maybe this should be private too
         def boundary
             if ! @boundary
                 @boundary = 'laskdfjalskdfjaslkdj' # FIXME
@@ -142,11 +186,13 @@ module CIFS
             return specs
         end
 
+        # returns a rack response
         def response
             [216, @header, self]
         end
 
-        def each
+        # returns a rack body
+        def each # :yields: bodychunk
             type   = self.mime_type
 
             @range.each do |r|
@@ -168,17 +214,22 @@ module CIFS
                 end
             end
         end
+
+        protected :create_input
+        private :parse_range
     end
 
     class RangeHelper
         attr_reader :first, :last
 
+        # spec:: 'x-y', 'x-' or '-y', see RFC 2616 14.35.1
+        # length:: the Content-Length
         def initialize(spec, length)
             @spec = spec
             @vals = spec.split('-').map{ |x| x.empty? ? nil : x.to_i }
             @length = length
-            @first = self.create_first
-            @last  = self.create_last
+            @first = create_first
+            @last  = create_last
             if @first > @last
                 raise RangeNotSatisfiableException, \
                     "invalid spec #{ @spec } first #{@first} last #{@last} length #{@length}"
@@ -209,21 +260,27 @@ module CIFS
 
         end
 
+        # returns the value for the HTTP Content-Range header
         def content_range
             "%d-%d/%d" % [self.first, self.last, @length]
         end
 
+        # how much bytes must be read for this range
         def to_read
             @last - @first + 1
         end
+
+        private :create_first, :create_last
     end
 
     class DirReader
+        # +smbfile+:: a jcifs.smb.SmbFile object
         def initialize(smbfile)
             @smbfile = smbfile
             @files = @smbfile.listFiles
         end
 
+        # yields a sorted list of SmbFile objects
         def each
             @files \
                 .sort{ |a,b| a.getName <=> b.getName } \
