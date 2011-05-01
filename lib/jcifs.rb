@@ -95,7 +95,7 @@ module CIFS
             end
 
             return mime.to_s if mime
-            return 'application/octet-stream'
+            return 'text/plain; charset=UTF-8'
         end
 
         # This yields chunks of the body, rack calls this to generate the
