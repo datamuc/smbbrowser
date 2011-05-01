@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: README.rdoc</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>README.rdoc</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>README.rdoc
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Sun May 01 13:45:18 +0200 2011</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1>Installation</h1>
+<h2>Standalone</h2>
+<pre>
+    $ jruby -S gem install mime-types sinatra-flash jruby-openssl haml configr
+</pre>
+<p>
+Now you can run it with rackup and webrick:
+</p>
+<pre>
+    $ CLASSPATH=$PWD/lib/jcifs-1.3.15.jar jruby -S rackup
+    [2011-05-01 13:16:07] INFO  WEBrick 1.3.1
+    [2011-05-01 13:16:07] INFO  ruby 1.8.7 (2011-04-12) [java]
+    [2011-05-01 13:16:12] INFO  WEBrick::HTTPServer#start: pid=13254 port=9292
+</pre>
+<h2>Deploying on a Servlet Container</h2>
+<p>
+First you need to build a .war file, warbler is a great tool that packages
+a rack app into a war file:
+</p>
+<pre>
+    $ jruby -S gem install warbler bundler bouncy-castle-java
+</pre>
+<p>
+For some reason warbler needs bundler and bouncy-castle-java but fails to
+depend on it, so you need to specify them explicitly.
+</p>
+<p>
+Now build the .war file:
+</p>
+<pre>
+    $ jruby -S warble
+    rm -f smbbrowser.war
+    Creating smbbrowser.war
+</pre>
+<p>
+Deploy smbbrowser.war on your servlet container of choice (I&#8216;ve
+tested on glassfish, tomcat and jetty)
+</p>
+<h1>Configuration</h1>
+<p>
+All configuration is done via a yaml file, except the location of the yaml
+file. ;)
+</p>
+<h2>Config File Location</h2>
+<p>
+The location of the config file is specified as a java system property:
+</p>
+<pre>
+    $ CLASSPATH=$PWD/lib/jcifs-1.3.15.jar jruby \
+        -J-Dsmbbrowser.configfile=/etc/smbbrowser.yaml -S rackup
+</pre>
+<p>
+If you deployed the war file to a servlet container, refer to it&#8216;s
+documentation on how to set the system property there.
+</p>
+<h2>Config File</h2>
+<pre>
+    points_of_interest:
+        Documents: smb://docserver/public/docs/
+        X-Change:  smb://server/fileXchange/
+        #...
+</pre>
+<p>
+There isn&#8216;t more configuration at the moment.
+<tt>point_of_interest</tt> creates a list of links on the entry page, for
+common used shares.
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
