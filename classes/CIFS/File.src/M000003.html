@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>get_icon (CIFS::File)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/jcifs.rb, line 53</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-identifier">get_icon</span>(<span class="ruby-identifier">file</span>)
+            <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">getType</span>
+                <span class="ruby-keyword kw">when</span> <span class="ruby-constant">CIFS</span><span class="ruby-operator">::</span><span class="ruby-constant">SmbFile</span><span class="ruby-operator">::</span><span class="ruby-constant">TYPE_FILESYSTEM</span>
+                    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">isDirectory</span> <span class="ruby-value">? </span><span class="ruby-value str">&quot;dir&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-value str">&quot;file&quot;</span>
+                <span class="ruby-keyword kw">when</span> <span class="ruby-constant">CIFS</span><span class="ruby-operator">::</span><span class="ruby-constant">SmbFile</span><span class="ruby-operator">::</span><span class="ruby-constant">TYPE_PRINTER</span>
+                    <span class="ruby-value str">&quot;printer&quot;</span>
+                <span class="ruby-keyword kw">when</span> <span class="ruby-constant">CIFS</span><span class="ruby-operator">::</span><span class="ruby-constant">SmbFile</span><span class="ruby-operator">::</span><span class="ruby-constant">TYPE_SHARE</span>
+                    <span class="ruby-value str">&quot;share&quot;</span>
+                <span class="ruby-keyword kw">when</span> <span class="ruby-constant">CIFS</span><span class="ruby-operator">::</span><span class="ruby-constant">SmbFile</span><span class="ruby-operator">::</span><span class="ruby-constant">TYPE_WORKGROUP</span>
+                    <span class="ruby-value str">&quot;workgroup&quot;</span>
+                <span class="ruby-keyword kw">when</span> <span class="ruby-constant">CIFS</span><span class="ruby-operator">::</span><span class="ruby-constant">SmbFile</span><span class="ruby-operator">::</span><span class="ruby-constant">TYPE_NAMED_PIPE</span>
+                    <span class="ruby-value str">&quot;pipe&quot;</span>
+                <span class="ruby-keyword kw">when</span> <span class="ruby-constant">CIFS</span><span class="ruby-operator">::</span><span class="ruby-constant">SmbFile</span><span class="ruby-operator">::</span><span class="ruby-constant">TYPE_COMM</span>
+                    <span class="ruby-value str">&quot;comm&quot;</span>
+                <span class="ruby-keyword kw">when</span> <span class="ruby-constant">CIFS</span><span class="ruby-operator">::</span><span class="ruby-constant">SmbFile</span><span class="ruby-operator">::</span><span class="ruby-constant">TYPE_SERVER</span>
+                    <span class="ruby-value str">&quot;server&quot;</span>
+                <span class="ruby-keyword kw">else</span>
+                    <span class="ruby-value str">&quot;unknown&quot;</span>
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>parse_range (CIFS::RangeFileReader)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/jcifs.rb, line 166</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse_range</span>(<span class="ruby-identifier">range_header</span>)
+            <span class="ruby-identifier">range_header</span>.<span class="ruby-identifier">strip!</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span> <span class="ruby-identifier">range_header</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-value str">&quot;bytes=&quot;</span>)
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">RangeNotSatisfiableException</span>, <span class="ruby-value str">&quot;only bytes ranges supported&quot;</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">range_header</span>.<span class="ruby-identifier">sub!</span>(<span class="ruby-value str">'bytes='</span>, <span class="ruby-value str">''</span>)
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">RangeNotSatisfiableException</span>, <span class="ruby-value str">&quot;invalid range&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">range_header</span>.<span class="ruby-identifier">empty?</span>
+
+            <span class="ruby-identifier">specs</span> = <span class="ruby-identifier">range_header</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">','</span>).<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">strip</span> }
+
+            <span class="ruby-comment cmt"># check specs</span>
+            <span class="ruby-identifier">specs</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span>
+                <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/^\d+-\d+$/</span>)
+                <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/^-\d+$/</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-operator">!</span><span class="ruby-identifier">s</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/^-0+$/</span>)
+                <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/^\d+-$/</span>)
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">RangeNotSatisfiableException</span>, <span class="ruby-node">&quot;#{s} is not a valid range spec&quot;</span>
+            <span class="ruby-keyword kw">end</span>
+
+            <span class="ruby-identifier">specs</span> = <span class="ruby-identifier">specs</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span> <span class="ruby-constant">RangeHelper</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">s</span>, <span class="ruby-ivar">@length</span>) }
+            <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">specs</span>
+        <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>each (CIFS::RangeFileReader)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/jcifs.rb, line 195</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">each</span> 
+            <span class="ruby-identifier">type</span>   = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">mime_type</span>
+
+            <span class="ruby-ivar">@range</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">r</span><span class="ruby-operator">|</span>
+                <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@multipart</span>
+                    <span class="ruby-keyword kw">yield</span> <span class="ruby-node">&quot;\n--#{ self.boundary }&quot;</span>
+                    <span class="ruby-keyword kw">yield</span> <span class="ruby-value str">&quot;\nContent-Type: %s&quot;</span> <span class="ruby-operator">%</span> <span class="ruby-identifier">type</span>
+                    <span class="ruby-keyword kw">yield</span> <span class="ruby-value str">&quot;\nContent-Range: %s&quot;</span> <span class="ruby-operator">%</span> <span class="ruby-identifier">r</span>.<span class="ruby-identifier">content_range</span>
+                    <span class="ruby-keyword kw">yield</span> <span class="ruby-value str">&quot;\n\n&quot;</span>
+                <span class="ruby-keyword kw">end</span>
+
+                <span class="ruby-ivar">@input</span>.<span class="ruby-identifier">seek</span>(<span class="ruby-identifier">r</span>.<span class="ruby-identifier">first</span>)
+                <span class="ruby-identifier">toread</span> = <span class="ruby-identifier">r</span>.<span class="ruby-identifier">to_read</span>
+                <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">toread</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+                    <span class="ruby-identifier">buflen</span> = <span class="ruby-identifier">toread</span> <span class="ruby-operator">&lt;</span> <span class="ruby-ivar">@bytes</span>.<span class="ruby-identifier">length</span> <span class="ruby-value">? </span><span class="ruby-identifier">toread</span> <span class="ruby-operator">:</span> <span class="ruby-ivar">@bytes</span>.<span class="ruby-identifier">length</span>
+                    <span class="ruby-comment cmt">#puts(&quot;%d %d %d&quot; % [buflen, toread, @input.getFilePointer])</span>
+                    <span class="ruby-ivar">@input</span>.<span class="ruby-identifier">read</span>(<span class="ruby-ivar">@bytes</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">buflen</span>)
+                    <span class="ruby-keyword kw">yield</span> <span class="ruby-constant">String</span>.<span class="ruby-identifier">from_java_bytes</span>(<span class="ruby-ivar">@bytes</span>[<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">buflen</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>])
+                    <span class="ruby-identifier">toread</span> <span class="ruby-operator">-=</span> <span class="ruby-identifier">buflen</span>
+                <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
