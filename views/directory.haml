@@ -15,7 +15,8 @@
       %th LastModified
   %tbody
     %tr
-      %td{ :class => 'dir'} &nbsp;
+      %td
+        %img{:src => url('/static/dir.svg'), :border => 0}
       %td{:style=>'min-width:50%;'}
         %a{ :href => url('/get/' + CIFS.escape_uri(@smbfile.getParent)) } ..
       %td &nbsp;
@@ -23,7 +24,7 @@
     - @dir.each do |file|
       %tr
         %td
-          %div{ :class => CIFS::File.get_icon(file) } &nbsp;
+          %img{ :src => url("/static/%s.svg" % CIFS::File.get_icon(file)), :border => 0 }
         %td
           - href = url('/get/' + CIFS.escape_uri(file.getURL.toString) )
           %a{ :href => href }&= file.getName
