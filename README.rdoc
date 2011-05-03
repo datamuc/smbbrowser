@@ -6,6 +6,9 @@ access is done with a java library jruby is required.
 
 The source can be found at https://github.com/datamuc/smbbrowser
 
+A live demo might be available at http://banjo.rbfh.de:21111/smbbrowser/
+sometimes.
+
 = Installation
 
 == Standalone

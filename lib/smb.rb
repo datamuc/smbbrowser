@@ -5,10 +5,11 @@
 # License::   Beerware
 #
 
-require './lib/jcifs'
+require 'jcifs'
 require 'time'
 require 'sinatra'
 require 'sinatra/flash'
+require 'haml'
 require 'uri'
 require 'configr'
 require 'java'
