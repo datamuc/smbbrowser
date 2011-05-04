@@ -43,14 +43,14 @@ end
 
 get '/get/*' do
     file = params[:splat][0]
-    session[:file] = file
-
     begin
         if session[:pass] and !session[:pass].empty?
             @smbfile = CIFS::File.get(file, session[:domain], session[:user], session[:pass])
         else
             @smbfile = CIFS::File.get(file)
         end
+
+        session[:file] = file
 
         if ! @smbfile.exists
             raise "File does not exist"
@@ -78,14 +78,25 @@ get '/get/*' do
         return redirect to('/')
     rescue CIFS::RangeNotSatisfiableException => e
         return [ 416, { 'Content-Type' => 'text/plain' }, e.message ]
-    rescue Exception => e
-        puts(e.message)
-        puts(e.backtrace)
-        if e.message.end_with?("must end with '/'") and ! file.end_with?('/')
-            file += '/'
-            session[:file] = file
+    rescue java.net.MalformedURLException => e
+        case file
+        when %r(^\\\\)
+            file.tr!('\\', '/')
+            file = "smb:" + file
+            retry
+        when %r(^//)
+            file = "smb:" + file
             retry
         end
+        flash[:error] = e.message
+        return redirect to('/')
+    rescue Exception => e
+        if e.message.end_with?("must end with '/'") and ! file.end_with?('/')
+            file += '/'
+            retry
+        end
+        puts(e.message)
+        puts(e.backtrace)
         flash[:error] = e.message
         return redirect to('/')
     end
