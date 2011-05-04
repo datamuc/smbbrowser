@@ -10,8 +10,18 @@ module CIFS
     require 'mime/types'
     require 'time'
     require 'rack/utils'
-    include_package 'jcifs.smb'
-    include_package 'jcifs.util'
+    require 'jcifs-1.3.15.jar'
+    require 'java'
+    begin
+        include_package 'jcifs.smb'
+        include_package 'jcifs.util'
+        CIFS::SmbFile
+    rescue
+        require 'jcifs-1.3.15.jar'
+        include_package 'jcifs.smb'
+        include_package 'jcifs.util'
+        CIFS::SmbFile
+    end
 
     # FIXME
     #
@@ -100,9 +110,9 @@ module CIFS
 
         def response
             header = Rack::Utils::HeaderHash.new()
-            header['Last-Modified']       = Time.at(@smbfile.getLastModified / 1000).httpdate,
-            header['Content-Length']      = @smbfile.length.to_s,
-            header['Content-Type']        = self.mime_type.to_s,
+            header['Last-Modified']       = Time.at(@smbfile.getLastModified / 1000).httpdate
+            header['Content-Length']      = @smbfile.length.to_s
+            header['Content-Type']        = self.mime_type.to_s
             header['Content-Disposition'] = 'filename*="%s"' % \
                 URI.escape(@smbfile.getName, /[^A-Za-z0-9\/]/)
             [200, header, self]
