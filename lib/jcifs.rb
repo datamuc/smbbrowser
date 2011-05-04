@@ -98,6 +98,16 @@ module CIFS
             return 'text/plain; charset=UTF-8'
         end
 
+        def response
+            header = Rack::Utils::HeaderHash.new()
+            header['Last-Modified']       = Time.at(@smbfile.getLastModified / 1000).httpdate,
+            header['Content-Length']      = @smbfile.length.to_s,
+            header['Content-Type']        = self.mime_type.to_s,
+            header['Content-Disposition'] = 'filename*="%s"' % \
+                URI.escape(@smbfile.getName, /[^A-Za-z0-9\/]/)
+            [200, header, self]
+        end
+
         # This yields chunks of the body, rack calls this to generate the
         # request body
         def each # :yields: bodychunk
@@ -135,7 +145,8 @@ module CIFS
             end
 
             @header = {
-                'Content-Disposition' => 'filename*="%s"' % URI.escape(@smbfile.getName, /[^A-Za-z0-9\/]/),
+                'Content-Disposition' => 'filename*="%s"' % \
+                    URI.escape(@smbfile.getName, /[^A-Za-z0-9\/]/),
                 'Last-Modified' => Time.at(@smbfile.getLastModified / 1000).httpdate,
             }
 

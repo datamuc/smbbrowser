@@ -62,13 +62,9 @@ get '/get/*' do
 
         if @smbfile.isFile and not request.env['HTTP_RANGE']
             fr = CIFS::FileReader.new(@smbfile)
-            headers \
-                'Last-Modified' => Time.at(@smbfile.getLastModified / 1000).httpdate,
-                'Content-Length' => @smbfile.length.to_s,
-                'Content-Type' => fr.mime_type.to_s,
-                'Content-Disposition' => 'filename*="%s"' % URI.escape(@smbfile.getName, /[^A-Za-z0-9\/]/)
-            return fr
+            return fr.response
         end
+
         if @smbfile.isFile and request.env['HTTP_RANGE']
             fr = CIFS::RangeFileReader.new(@smbfile, request.env['HTTP_RANGE'])
             return fr.response
