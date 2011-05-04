@@ -5,16 +5,20 @@
 
 <html>
 <head>
-  <title>each (CIFS::FileReader)</title>
+  <title>response (CIFS::FileReader)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File lib/jcifs.rb, line 103</span>
-        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">each</span> <span class="ruby-comment cmt"># :yields: bodychunk</span>
-            <span class="ruby-keyword kw">while</span> ( <span class="ruby-identifier">read</span> = <span class="ruby-ivar">@input</span>.<span class="ruby-identifier">read</span>(<span class="ruby-ivar">@bytes</span>) ) <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
-                <span class="ruby-keyword kw">yield</span> <span class="ruby-constant">String</span>.<span class="ruby-identifier">from_java_bytes</span>(<span class="ruby-ivar">@bytes</span>[<span class="ruby-constant">Range</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">0</span>, <span class="ruby-identifier">read</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>)])
-            <span class="ruby-keyword kw">end</span>
+  <pre><span class="ruby-comment cmt"># File lib/jcifs.rb, line 111</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">response</span>
+            <span class="ruby-identifier">header</span> = <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Utils</span><span class="ruby-operator">::</span><span class="ruby-constant">HeaderHash</span>.<span class="ruby-identifier">new</span>()
+            <span class="ruby-identifier">header</span>[<span class="ruby-value str">'Last-Modified'</span>]       = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">at</span>(<span class="ruby-ivar">@smbfile</span>.<span class="ruby-identifier">getLastModified</span> <span class="ruby-operator">/</span> <span class="ruby-value">1000</span>).<span class="ruby-identifier">httpdate</span>
+            <span class="ruby-identifier">header</span>[<span class="ruby-value str">'Content-Length'</span>]      = <span class="ruby-ivar">@smbfile</span>.<span class="ruby-identifier">length</span>.<span class="ruby-identifier">to_s</span>
+            <span class="ruby-identifier">header</span>[<span class="ruby-value str">'Content-Type'</span>]        = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">mime_type</span>.<span class="ruby-identifier">to_s</span>
+            <span class="ruby-identifier">header</span>[<span class="ruby-value str">'Content-Disposition'</span>] = <span class="ruby-value str">'filename*=&quot;%s&quot;'</span> <span class="ruby-operator">%</span> \
+                <span class="ruby-constant">URI</span>.<span class="ruby-identifier">escape</span>(<span class="ruby-ivar">@smbfile</span>.<span class="ruby-identifier">getName</span>, <span class="ruby-regexp re">/[^A-Za-z0-9\/]/</span>)
+            [<span class="ruby-value">200</span>, <span class="ruby-identifier">header</span>, <span class="ruby-keyword kw">self</span>]
         <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

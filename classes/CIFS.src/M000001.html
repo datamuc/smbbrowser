@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File lib/jcifs.rb, line 19</span>
+  <pre><span class="ruby-comment cmt"># File lib/jcifs.rb, line 29</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-constant">CIFS</span><span class="ruby-operator">::</span><span class="ruby-identifier">escape_uri</span>(<span class="ruby-identifier">uri</span>)
         <span class="ruby-identifier">uri</span> = <span class="ruby-constant">URI</span>.<span class="ruby-identifier">escape</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-regexp re">/[^A-Za-z0-9\/]/</span>)
         <span class="ruby-identifier">uri</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/%2B/</span>, <span class="ruby-value str">'%252B'</span>)

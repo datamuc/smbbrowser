@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File lib/jcifs.rb, line 36</span>
+  <pre><span class="ruby-comment cmt"># File lib/jcifs.rb, line 46</span>
         <span class="ruby-keyword kw">def</span> <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-identifier">get</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">domain</span>=<span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">user</span>=<span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">pass</span>=<span class="ruby-keyword kw">nil</span>)
             <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">pass</span> <span class="ruby-keyword kw">and</span> <span class="ruby-operator">!</span><span class="ruby-identifier">pass</span>.<span class="ruby-identifier">empty?</span>
                 <span class="ruby-identifier">auth</span> = <span class="ruby-constant">CIFS</span><span class="ruby-operator">::</span><span class="ruby-constant">NtlmPasswordAuthentication</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">domain</span>, <span class="ruby-identifier">user</span>, <span class="ruby-identifier">pass</span>)
