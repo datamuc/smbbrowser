@@ -18,15 +18,17 @@ require 'java'
 enable :sessions
 
 configure do
-    set :session_secret, 'XXhTTXqmjydf39duXE7rLJTXxNaYFK'
     set :views, File.dirname(__FILE__) + '/../views'
     set :public, File.dirname(__FILE__) + '/../public'
 
     configfile = Java::JavaLang::System.getProperty("smbbrowser.configfile")
     if configfile and File.readable?(configfile)
         set :config, Configr::Configuration.configure(configfile)
+        set :session_secret, settings.config['secret']
     else
         set :config, Configr::Configuration.configure {}
+        set :session_secret, 'XXhTTXqmjydf39duXE7rLJTXxNaYFK'
+        warn "please supply a config file and set a secret at least"
     end
 end
 
