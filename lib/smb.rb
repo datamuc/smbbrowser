@@ -38,6 +38,25 @@ end
 
 get '/get' do
     file = params[:file]
+    begin
+        if session[:pass] and !session[:pass].empty?
+            @smbfile = CIFS::File.get(file, session[:domain], session[:user], session[:pass])
+        else
+            @smbfile = CIFS::File.get(file)
+        end
+    rescue java.net.MalformedURLException => e
+        case file
+        when %r(^\\\\)
+            file.tr!('\\', '/')
+            file = "smb:" + file
+            retry
+        when %r(^//)
+            file = "smb:" + file
+            retry
+        end
+        flash[:error] = e.message
+        return redirect to('/')
+    end
     redirect to('/get/' + CIFS.escape_uri(file))
 end
 
@@ -78,18 +97,6 @@ get '/get/*' do
         return redirect to('/')
     rescue CIFS::RangeNotSatisfiableException => e
         return [ 416, { 'Content-Type' => 'text/plain' }, e.message ]
-    rescue java.net.MalformedURLException => e
-        case file
-        when %r(^\\\\)
-            file.tr!('\\', '/')
-            file = "smb:" + file
-            retry
-        when %r(^//)
-            file = "smb:" + file
-            retry
-        end
-        flash[:error] = e.message
-        return redirect to('/')
     rescue Exception => e
         if e.message.end_with?("must end with '/'") and ! file.end_with?('/')
             file += '/'
