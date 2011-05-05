@@ -58,10 +58,13 @@ on how to set the system property there.
 
 == Config File
 
+    secret: iemaiyahghohxosaenohxoteingiowee
     points_of_interest:
         Documents: smb://docserver/public/docs/
         X-Change:  smb://server/fileXchange/
         #...
 
-There isn't more configuration at the moment. +point_of_interest+ creates a
-list of links on the entry page, for common used shares.
+There isn't more configuration at the moment.
++point_of_interest+:: creates a list of links on the entry page,
+                      for common used shares.
++secret+:: this is used to encrypt the cookie
